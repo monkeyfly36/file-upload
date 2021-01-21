@@ -16,9 +16,9 @@ module.exports = app => {
   router.post('/checkfile', controller.util.checkfile)
 
   router.group({ name: 'user', prefix: '/user' }, router => {
-    const { info, register, login, verify, 
-            isfollow, follow, cancelFollow, following, followers,
-            likeArticle, cancelLikeArticle, articleStatus } = controller.user
+    const { info, register, login, verify,
+      isfollow, follow, cancelFollow, following, followers,
+      likeArticle, cancelLikeArticle, articleStatus } = controller.user
     router.post('/register', register)
     router.post('/login', login)
 

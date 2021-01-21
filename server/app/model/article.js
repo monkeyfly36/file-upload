@@ -1,3 +1,5 @@
+'use strict'
+
 // 用户字段设计
 module.exports = app => {
   const mongoose = app.mongoose
