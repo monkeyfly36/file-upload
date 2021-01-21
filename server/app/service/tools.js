@@ -25,7 +25,7 @@ class ToolService extends Service {
   }
   async mergeChunks(files, dest, size) {
     const pipStream = (filePath, writeStream) => new Promise(resolve => {
-      let readStream = fse.createReadStream(filePath)
+      const readStream = fse.createReadStream(filePath)
       readStream.on('end', () => {
         // fse.unlinkSync(filePath)
         resolve()

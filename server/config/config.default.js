@@ -19,7 +19,7 @@ module.exports = appInfo => {
     whitelist: () => true,
   }
   config.UPLOAD_DIR = path.resolve(__dirname, '..', 'app/public')
-  
+
   // add your middleware config here
   config.middleware = []
 

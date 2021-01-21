@@ -14,6 +14,7 @@ const createRule = {
 }
 
 class UserController extends BaseController {
+  /* 登录 */
   async login() {
     const { ctx, app } = this
     const { email, captcha, passwd, emailcode } = ctx.request.body
@@ -41,7 +42,6 @@ class UserController extends BaseController {
     })
     this.success({ token, email, nickname: user.nickname })
   }
-
   async register() {
     const { ctx } = this
     try {
@@ -73,21 +73,91 @@ class UserController extends BaseController {
 
     this.success({ name: 'kkb' })
   }
-  // 验证邮箱是否重复
   async checkEmail(email) {
+    // 验证邮箱是否重复
     const user = await this.ctx.model.User.findOne({ email })
     return user
   }
   async verify() {
     // 校验用户名是否存在
-
   }
-
   async info() {
     const { ctx } = this
     const { email } = ctx.state
     const user = await this.checkEmail(email)
     this.success(user)
+  }
+  /* 用户中心-关注和粉丝相关 */
+  async following() {
+    const { ctx } = this
+    const users = await ctx.model.User.findById(ctx.params.id).populate('following')
+    this.success(users.following)
+  }
+  async followers() {
+    const { ctx } = this
+    const users = await ctx.model.User.find({ following: ctx.params.id })
+    this.success(users)
+  }
+  /* Article关注相关 */
+  async isfollow() {
+    const { ctx } = this
+    const me = await ctx.model.User.findById(ctx.state.userid)
+    // 我的follow字段里，有没有传来的这个用户id
+    const isFollow = !!me.following.find(id => id.toString() === ctx.params.id)
+    this.success({ isFollow })
+  }
+  async follow() {
+    const { ctx } = this
+    const me = await ctx.model.User.findById(ctx.state.userid)
+    const isFollow = !!me.following.find(id => id.toString() === ctx.params.id)
+    if (!isFollow) {
+      me.following.push(ctx.params.id)
+      me.save()
+      this.message('关注成功')
+    }
+  }
+  async cancelFollow() {
+    const { ctx } = this
+    const me = await ctx.model.User.findById(ctx.state.userid)
+    // 把用户从我的following数组中删掉
+    const index = me.following.map(id => id.toString()).indexOf(ctx.params.id)
+    if (index > -1) {
+      me.following.splice(index, 1)
+      me.save()
+      this.message('取消成功')
+    }
+  }
+  /* Article点赞相关 */
+  async likeArticle() {
+    const { ctx } = this
+    const me = await ctx.model.User.findById(ctx.state.userid)
+    if (!me.likeArticle.find(id => id.toString() === ctx.params.id)) {
+      me.likeArticle.push(ctx.params.id)
+      me.save()
+      await ctx.model.Article.findByIdAndUpdate(ctx.params.id, { $inc: { like: 1 } })
+      return this.message('点赞成功')
+    }
+  }
+  async cancelLikeArticle() {
+    const { ctx } = this
+    const me = await ctx.model.User.findById(ctx.state.userid)
+    const index = me.likeArticle.map(id => id.toString()).indexOf(ctx.params.id)
+    if (index > -1) {
+      me.likeArticle.splice(index, 1)
+      me.save()
+      await ctx.model.Article.findByIdAndUpdate(ctx.params.id, { $inc: { like: -1 } })
+      return this.message('取消点赞成功')
+    }
+  }
+  async articleStatus() {
+    const { ctx } = this
+    const me = await ctx.model.User.findById(ctx.state.userid)
+    console.log(me)
+    const like = !!me.likeArticle.find(id => id.toString() === ctx.params.id)
+    const dislike = !!me.disLikeArticle.find(id => id.toString() === ctx.params.id)
+    this.success({
+      like, dislike,
+    })
   }
 }
 

@@ -38,15 +38,17 @@ class UtilController extends BaseController {
     }
   }
   async uploadfile() {
-    if(Math.random() < 0.5) {
-      return this.ctx.status = 500
-    }
+    // 测试上传失败情况
+    // if (Math.random() < 0.5) {
+    //   this.ctx.status = 500
+    //   return
+    // }
     const { ctx } = this
     const file = ctx.request.files[0]
     const { hash, name } = ctx.request.body
     const chunkPath = path.resolve(this.config.UPLOAD_DIR, hash)
     // const filePath = path.resolve(this.config.UPLOAD_DIR, name) // 文件最终存储位置, 合并之后
-    if(!fse.existsSync(chunkPath)) {
+    if (!fse.existsSync(chunkPath)) {
       await fse.mkdir(chunkPath)
     }
     await fse.move(file.filepath, `${chunkPath}/${name}`)

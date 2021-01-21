@@ -1,5 +1,7 @@
 <template>
   <div>
+    <div contenteditable="true">哈哈</div>
+    document.execCommand('')
     <h1>用户中心</h1>
     <!-- 先加载loading, 防止渲染时不显示
     <i class="el-icon-loading"></i> -->
@@ -48,7 +50,7 @@
 import { isImage } from '@/utils/img'
 import { messTip } from '@/utils/mess'
 import sparkMD5 from 'spark-md5'
-const CHUNK_SIZE = 0.14 * 1024 * 1020 // 10M和100Kb区别 node切片start不能是小数？
+const CHUNK_SIZE = 0.2 * 1024 * 1020 // 10M和100Kb区别 node切片start不能是小数？
 export default {
   async mounted(){
     const ret = await this.$http.get('/user/info')
@@ -388,12 +390,7 @@ export default {
         this.file = fileList[0]
         e.preventDefault()
       })
-    }, 
-  
-
-
-//     
-//     
+    }     
   }
 }
 </script>

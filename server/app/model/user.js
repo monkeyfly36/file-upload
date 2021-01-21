@@ -10,6 +10,18 @@ module.exports = app => {
     nickname: { type: String, required: true },
     passwd: { type: String, required: true, select: false },
     avatar: { type: String, required: false, default: '/user.png' },
+    following: {
+      type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+      default: [],
+    },
+    likeArticle: {
+      type: [{ type: Schema.Types.ObjectId, ref: 'Article' }],
+      default: [],
+    },
+    disLikeArticle: {
+      type: [{ type: Schema.Types.ObjectId, ref: 'Article' }],
+      default: [],
+    },
   }, { timestamps: true })
   return mongoose.model('User', UserSchema)
 }
