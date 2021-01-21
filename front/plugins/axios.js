@@ -3,16 +3,14 @@ import axios from 'axios'
 import { MessageBox } from 'element-ui'
 
 let service = axios.create({
-  timeout:5000,
+  timeout: 5000,
   // 前缀
-  baseURL:'/api'
+  baseURL: '/api'
 })
 const TOKEN_KEY = 'KKB_USER_TOKEN'
 
 // @ todo 拦截器 管理token
 export default({store, redirect})=>{
-  console.log('store',store)
-  console.log('redirect',redirect)
   // 请求拦截
   service.interceptors.request.use(
     config=>{

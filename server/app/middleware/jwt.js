@@ -1,3 +1,5 @@
+'use strict'
+
 // 解析token的中间件，也可以用egg-jwt，自己封装更适合了解原理
 const jwt = require('jsonwebtoken')
 

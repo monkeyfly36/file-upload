@@ -1,3 +1,5 @@
+'use strict'
+
 const md5 = require('md5')
 const jwt = require('jsonwebtoken')
 const BaseController = require('./base')
@@ -39,37 +41,37 @@ class UserController extends BaseController {
     })
     this.success({ token, email, nickname: user.nickname })
   }
-  
+
   async register() {
     const { ctx } = this
     try {
       // 校验传递的参数
       ctx.validate(createRule)
-    } catch(e) {
+    } catch (e) {
       return this.error('参数校验失败', -1, e.errors)
     }
 
     const { email, passwd, captcha, nickname } = ctx.request.body
     // 验证码
-    if(captcha.toUpperCase() === ctx.session.captcha.toUpperCase()) {
+    if (captcha.toUpperCase() === ctx.session.captcha.toUpperCase()) {
       // 邮箱
-      if(await this.checkEmail(email)) {
+      if (await this.checkEmail(email)) {
         return this.error('邮箱重复')
-      } else {
-        const ret = await ctx.model.User.create({
-          email,
-          nickname,
-          passwd: md5(passwd + HashSalt),
-        })
-        if (ret._id) {
-          this.message('注册成功')
-        }
       }
+      const ret = await ctx.model.User.create({
+        email,
+        nickname,
+        passwd: md5(passwd + HashSalt),
+      })
+      if (ret._id) {
+        this.message('注册成功')
+      }
+
     } else {
       return this.error('验证码错误')
     }
 
-    this.success({name: 'kkb'})
+    this.success({ name: 'kkb' })
   }
   // 验证邮箱是否重复
   async checkEmail(email) {
@@ -78,7 +80,7 @@ class UserController extends BaseController {
   }
   async verify() {
     // 校验用户名是否存在
-    
+
   }
 
   async info() {
